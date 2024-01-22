@@ -19,10 +19,10 @@ def main(config):
     logger.info("-"*100)
 
     # get function handles of metrics
-    metrics = [getattr(module_metric, met) for met in config['metrics']]
-    
-    metrics = [getattr(module_metric, met) for met in ['IPTW', 'Acc_treatment', 'Acc_outcome','AUROC']]
-
+    if config['data_loader']['is_EHR']:
+        metrics = [getattr(module_metric, met) for met in ['IPTW', 'Acc_treatment', 'Acc_outcome','AUROC']]
+    else:
+        metrics = [getattr(module_metric, met) for met in config['metrics']]
     # build optimizer
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())
     optimizer = config.init_obj('optimizer', torch.optim, trainable_params)
