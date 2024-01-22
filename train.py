@@ -1,23 +1,17 @@
 import argparse
 import model.metric as module_metric
-from model.models import SubgroupTE
+from model.models import STEDR
 from trainer.trainer import Trainer
 from utils import Load_split_dataset
 from utils.parse_config import ConfigParser
 import torch
-
-# fix random seeds for reproducibility
-SEED = 1111
-torch.manual_seed(SEED)
-torch.backends.cudnn.deterministic = False
-torch.backends.cudnn.benchmark = False
 
 def main(config):
     # load datasets
     config, train_set, valid_set, test_set = Load_split_dataset(config)
         
     # build model architecture, initialize weights, then print to console    
-    model = SubgroupTE(config['hyper_params'])
+    model = STEDR(config['hyper_params'])
     model.weights_init()  
     
     logger = config.get_logger('train') 
@@ -26,6 +20,8 @@ def main(config):
 
     # get function handles of metrics
     metrics = [getattr(module_metric, met) for met in config['metrics']]
+    
+    metrics = [getattr(module_metric, met) for met in ['IPTW', 'Acc_treatment', 'Acc_outcome','AUROC']]
 
     # build optimizer
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())
@@ -39,8 +35,7 @@ def main(config):
                       valid_set,
                       test_set)
 
-    log = trainer.train()
-    return log
+    return trainer.train()
 
 if __name__ == '__main__':
     args = argparse.ArgumentParser()
