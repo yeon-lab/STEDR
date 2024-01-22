@@ -21,7 +21,7 @@ class Trainer(BaseTrainer):
         super().__init__(model, metric_ftns, optimizer, config)
         self.config = config
         self.batch_size = config['data_loader']["batch_size"]
-        self.maxlen = config['hyper_params']['maxlen']
+        self.maxlen = config['data_loader']['maxlen']
         self.is_EHR = config['data_loader']['is_EHR']
 
         self.n_clusters = self.model.n_clusters
