@@ -28,7 +28,8 @@ def Load_split_dataset(config):
     config["data_loader"]["n_train"] = len(train_index)
     config["data_loader"]["n_valid"] = len(valid_index)
     config["data_loader"]["n_test"] = len(test_index)
-    
+    config['data_loader']['is_EHR'] = False
+    config['data_loader']['maxlen'] = 1
     return config, train_set, valid_set, test_set
 
 
