@@ -1,8 +1,7 @@
 import numpy as np
 import torch
 from base_trainer import BaseTrainer
-from utils import inf_loop, MetricTracker
-from utils import padding
+from utils.util import padding,inf_loop, MetricTracker
 import torch.nn as nn
 import pandas as pd
 from metric import compute_variances
@@ -21,9 +20,9 @@ class Trainer(BaseTrainer):
                       test_set):
         super().__init__(model, metric_ftns, optimizer, config)
         self.config = config
-        self.batch_size = config["batch_size"]
-        self.maxlen = config['maxlen']
-        self.is_EHR = config['is_EHR']
+        self.batch_size = config['data_loader']["batch_size"]
+        self.maxlen = config['hyper_params']['maxlen']
+        self.is_EHR = config['data_loader']['is_EHR']
 
         self.n_clusters = self.model.n_clusters
         self.input_dim = self.model.input_dim
