@@ -1,7 +1,8 @@
 import numpy as np
 import torch
 from base_trainer import BaseTrainer
-from utils.util import padding,inf_loop, MetricTracker
+from utils import inf_loop, MetricTracker
+from utils import padding
 import torch.nn as nn
 import pandas as pd
 from metric import compute_variances
@@ -20,9 +21,9 @@ class Trainer(BaseTrainer):
                       test_set):
         super().__init__(model, metric_ftns, optimizer, config)
         self.config = config
-        self.batch_size = config['data_loader']["batch_size"]
-        self.maxlen = config['data_loader']['maxlen']
-        self.is_EHR = config['data_loader']['is_EHR']
+        self.batch_size = config["batch_size"]
+        self.maxlen = config['maxlen']
+        self.is_EHR = config['is_EHR']
 
         self.n_clusters = self.model.n_clusters
         self.input_dim = self.model.input_dim
@@ -53,6 +54,7 @@ class Trainer(BaseTrainer):
         x_lengths = None
         for index in range(self.train_n_batches):
             x = self.train_set['X'][index*self.batch_size:(index+1)*self.batch_size]
+            x_dates = self.train_set['X_dates'][index*self.batch_size:(index+1)*self.batch_size]
             if self.is_EHR:
                 x, x_lengths = padding(x, self.input_dim, self.maxlen)
             else:
@@ -68,7 +70,7 @@ class Trainer(BaseTrainer):
                 ).to(self.device)
 
             self.optimizer.zero_grad()
-            loss, y0_pred, y1_pred, t_pred, clusters, _ = self.model.predict(x, t, y, x_lengths)
+            loss, y0_pred, y1_pred, t_pred, clusters, _ = self.model.predict(x, x_dates, t, y, x_lengths)
             loss.backward(retain_graph=True)
             self.optimizer.step()
             self.metrics.update('loss', loss.item())
@@ -131,26 +133,27 @@ class Trainer(BaseTrainer):
         self.model.train()
         y0_outs, y1_outs, t_outs = np.array([]), np.array([]), np.array([])
         y_trgs, t_trgs, te_trgs = np.array([]), np.array([]), np.array([])
-        assigned_clusters, all_attentions = np.array([]), np.empty((0, self.config['input_dim']))
+        assigned_clusters, all_attentions, all_ids = np.array([]), np.empty((0, self.config['input_dim'])), np.array([])
         x_lengths = None
         
         for index in range(n_batches):
-            x = self.train_set['X'][index*self.batch_size:(index+1)*self.batch_size]
+            x = data_set['X'][index*self.batch_size:(index+1)*self.batch_size]
+            x_dates = data_set['X_dates'][index*self.batch_size:(index+1)*self.batch_size]
             if self.is_EHR:
                 x, x_lengths = padding(x, self.input_dim, self.maxlen)
             else:
                 te = torch.Tensor(
-                        self.train_set['TE'][index*self.batch_size:(index+1)*self.batch_size]                    
+                        data_set['TE'][index*self.batch_size:(index+1)*self.batch_size]                    
                     ).to(self.device)
             x = torch.from_numpy(x).float().to(self.device)
             t = torch.Tensor(
-                    self.train_set['T'][index*self.batch_size:(index+1)*self.batch_size]                    
+                    data_set['T'][index*self.batch_size:(index+1)*self.batch_size]                    
                 ).to(self.device)            
             y = torch.Tensor(
-                    self.train_set['Y'][index*self.batch_size:(index+1)*self.batch_size]                    
+                    data_set['Y'][index*self.batch_size:(index+1)*self.batch_size]                    
                 ).to(self.device)
-            
-            loss, y0_pred, y1_pred, t_pred, clusters, attentions = self.model.predict(x, t, y, x_lengths)
+                
+            loss, y0_pred, y1_pred, t_pred, clusters, attentions = self.model.predict(x, x_dates, t, y, x_lengths)
             self.metrics.update('loss', loss.item())
 
             assigned_clusters = np.append(assigned_clusters, clusters.cpu().numpy())
@@ -193,28 +196,18 @@ class Trainer(BaseTrainer):
             log.update({'TE avg. for group {}'.format(c): np.mean(sub_te)})
             log.update({'TE std. for group {}'.format(c): np.std(sub_te)})
             
-        results = {
-            'log': log,
-            'TE': TE,
-            'Y': y_trgs,
-            'T': t_trgs,
-            'assigned_clusters': assigned_clusters,
-            'all_attentions': all_attentions
-        }
-        return results
+        return log
         
 
     def _test_epoch(self):
-
         log = {}        
-        train_results = self._infer(self.train_set, self.train_n_batches, phase='train')
-        valid_results = self._infer(self.valid_set, self.valid_n_batches, phase='valid')
-        test_results = self._infer(self.test_set, self.test_n_batches, phase='test')
+        train_log = self._infer(self.train_set, self.train_n_batches, phase='train')
+        valid_log = self._infer(self.valid_set, self.valid_n_batches, phase='valid')
+        test_log = self._infer(self.test_set, self.test_n_batches, phase='test')
         
-
-        log.update(**{'train_' + k: v for k, v in train_results['log'].items()})
-        log.update(**{'val_' + k: v for k, v in valid_results['log'].items()})
-        log.update(**{'test_' + k: v for k, v in test_results['log'].items()})
+        log.update(**{'train_' + k: v for k, v in train_log.items()})
+        log.update(**{'val_' + k: v for k, v in valid_log.items()})
+        log.update(**{'test_' + k: v for k, v in test_log.items()})
                         
         print('='*100)
         print('Inference is completed')
@@ -222,7 +215,9 @@ class Trainer(BaseTrainer):
         for key, value in log.items():
             print('    {:20s}: {}'.format(str(key), value))  
         print('='*100)
-        return train_results, valid_results, test_results
+
+            
+        return log
         
     def _progress(self, batch_idx):
         base = '[{}/{} ({:.0f}%)]'
