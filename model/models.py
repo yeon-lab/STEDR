@@ -4,6 +4,8 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 from functools import partial
 from copy import deepcopy
+import torch
+import torch.nn as nn
 
 def loss_func(y, t, y0_pred, y1_pred, t_pred):
     loss_t = F.binary_cross_entropy(t_pred, t)
@@ -64,7 +66,6 @@ class STEDR(nn.Module):
             nn.Linear(dist_dim, dist_dim), nn.ReLU(),
             nn.Linear(dist_dim, 1)
             )
-        
         self.control_out = deepcopy(outcomemodel)
         self.treat_out = deepcopy(outcomemodel)
         
