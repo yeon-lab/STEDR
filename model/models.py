@@ -3,6 +3,7 @@ from typing import Optional
 from torch.autograd import Variable
 import torch.nn.functional as F
 from functools import partial
+from copy import deepcopy
 
 def loss_func(y, t, y0_pred, y1_pred, t_pred):
     loss_t = F.binary_cross_entropy(t_pred, t)
@@ -57,30 +58,25 @@ class STEDR(nn.Module):
         for i in range(self.n_clusters):
             self.cluster_fc_mu.append(nn.Linear(self.input_dim, dist_dim))
             self.cluster_fc_var.append(nn.Linear(self.input_dim, dist_dim))
-        
-        self.control_out = nn.Sequential(
+
+        outcomemodel = nn.Sequential(
             nn.Linear(dist_dim, dist_dim), nn.ReLU(),
             nn.Linear(dist_dim, dist_dim), nn.ReLU(),
-            nn.Linear(dist_dim, 1), nn.Sigmoid()
+            nn.Linear(dist_dim, 1)
             )
         
-        self.treat_out = nn.Sequential(
-            nn.Linear(dist_dim, dist_dim), nn.ReLU(),
-            nn.Linear(dist_dim, dist_dim), nn.ReLU(),
-            nn.Linear(dist_dim, 1), nn.Sigmoid()
-            )
+        self.control_out = deepcopy(outcomemodel)
+        self.treat_out = deepcopy(outcomemodel)
         
         self.cluster_out = nn.Sequential(
             nn.Linear(dist_dim, dist_dim), nn.ReLU(),
             nn.Linear(dist_dim, self.n_clusters), nn.Softmax(dim=1)
             )
-        
         self.propensity = nn.Sequential(
             nn.Linear(dist_dim, dist_dim), nn.ReLU(),
             nn.Linear(dist_dim, 1), nn.Sigmoid()
             )
 
-            
     def target_distribution(self, q):
         numerator = (q ** 2) / torch.sum(q, 0)
         p = (numerator.t() / torch.sum(numerator, 1)).t()
@@ -102,7 +98,7 @@ class STEDR(nn.Module):
         for i in range(self.n_clusters):
             std = torch.exp(0.5 * cluster_var[:,i])
             eps = torch.randn_like(std)
-            mixtured_features += weights[:,i].unsqueeze(-1)*(cluster_mu[:,i] + std) #weights[:,i].unsqueeze(-1)*(cluster_mu[:,i] + eps * std)
+            mixtured_features += weights[:,i].unsqueeze(-1)*(cluster_mu[:,i] + std) 
         return mixtured_features
     
     def kl_div_dist(self, local_, global_):
