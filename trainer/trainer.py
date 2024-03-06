@@ -51,12 +51,12 @@ class Trainer(BaseTrainer):
         y0_outs, y1_outs, t_outs = np.array([]), np.array([]), np.array([])
         y_trgs, t_trgs, te_trgs = np.array([]), np.array([]), np.array([])
         assigned_clusters = np.array([])
-        x_lengths = None
+        x_lengths, x_dates = None, None
         for index in range(self.train_n_batches):
             x = self.train_set['X'][index*self.batch_size:(index+1)*self.batch_size]
-            x_dates = self.train_set['X_dates'][index*self.batch_size:(index+1)*self.batch_size]
             if self.is_EHR:
                 x, x_lengths = padding(x, self.input_dim, self.maxlen)
+                x_dates = self.train_set['X_dates'][index*self.batch_size:(index+1)*self.batch_size]
             else:
                 te = torch.Tensor(
                         self.train_set['TE'][index*self.batch_size:(index+1)*self.batch_size]                    
@@ -134,13 +134,13 @@ class Trainer(BaseTrainer):
         y0_outs, y1_outs, t_outs = np.array([]), np.array([]), np.array([])
         y_trgs, t_trgs, te_trgs = np.array([]), np.array([]), np.array([])
         assigned_clusters, all_attentions, all_ids = np.array([]), np.empty((0, self.config['input_dim'])), np.array([])
-        x_lengths = None
+        x_lengths, x_dates = None, None
         
         for index in range(n_batches):
             x = data_set['X'][index*self.batch_size:(index+1)*self.batch_size]
-            x_dates = data_set['X_dates'][index*self.batch_size:(index+1)*self.batch_size]
             if self.is_EHR:
                 x, x_lengths = padding(x, self.input_dim, self.maxlen)
+                x_dates = data_set['X_dates'][index*self.batch_size:(index+1)*self.batch_size]
             else:
                 te = torch.Tensor(
                         data_set['TE'][index*self.batch_size:(index+1)*self.batch_size]                    
