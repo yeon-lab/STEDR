@@ -7,7 +7,7 @@ Drug repurposing identifies new therapeutic uses for existing drugs, potentially
 In this study, we introduce a novel framework, named STEDR, that integrates subgroup identification with treatment effect estimation, aimed at both advancing estimation and facilitating precise drug repurposing. STEDR effectively identifies drugs that can be repurposed, along with subgroups exhibiting heterogeneous treatment responses, by learning subgroup-specific treatment effects. Comprehensive experiments demonstrate the superior performance and efficiency of the proposed method. Notably, a real-world case study on Alzheimer's Disease (AD) treatment highlights the method's effectiveness in identifying suitable repurposable drug candidates and the specific subgroups that benefit most for precise drug repurposing.
 
 ## Overview
-![figure1]()
+![figure1](https://github.com/yeon-lab/STEDR/assets/39074545/c9c5fc7b-bf14-4339-b5c0-9360c0081bd2)
 
 Figure 1: An illustration of the proposed method. The input is first processed through the patient-level representation with covariate and visit attention mechanisms and a transformer encoder. Subgroup-specific representation learning assigns the subgroup and extracts subgroup-specific representation from its distribution based on similarities with the global distribution. To learn the subgroup-specific distributions, the model obtains a Gaussian mixture model using the subgroup-specific distributions and their similarities and then computes KLD between the mixture model and the global distribution. The model predicts the outcomes and propensity score from the subgroup-specific representation.
 
