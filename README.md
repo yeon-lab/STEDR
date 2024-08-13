@@ -41,7 +41,7 @@ synthetic (dict)
 _Note: The simulation for the synthetic dataset is already integrated within 'train.py' file._
 
 
-### OUD dataset
+### EHR dataset
 Please be informed that the real-world dataset utilized in this study is derived from MarketScan claims data. To obtain access to the data, interested parties are advised to contact IBM through [link](https://www.merative.com/real-world-evidence).
 
 ## Training and test
