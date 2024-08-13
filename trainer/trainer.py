@@ -18,9 +18,9 @@ class Trainer(BaseTrainer):
                       test_set):
         super().__init__(model, metric_ftns, optimizer, config)
         self.config = config
-        self.batch_size = config["batch_size"]
-        self.maxlen = config['maxlen']
-        self.is_EHR = config['is_EHR']
+        self.batch_size = config['data_loader']['batch_size']
+        self.maxlen = config['data_loader]['maxlen']
+        self.is_EHR = config['data_loader']['data'] == 'EHR'
 
         self.n_groups = self.model.n_groups
         self.input_dim = self.model.input_dim
