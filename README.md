@@ -64,6 +64,7 @@ Hyper-parameters are set in *.json
 * `n_samples`: the number of simulated samples (for the synthetic dataset only)
 * `train_ratio`: the ratio of training
 * `test_ratio`: the ratio of test set
+* `maxlen`: the maximum number of visits (for the EHR dataset only)
 * `n_groups`: the number of subgroups to identify.
 * `att_dim`: the hidden dimension of the covariate-level and visit-level attentions.
 * `emb_dim`: the hidden dimension of the transformer encoder.
