@@ -1,9 +1,9 @@
 import numpy as np
 import torch
-from base_trainer import BaseTrainer
-from utils import MetricTracker
-from utils import padding
-from metric import compute_variances
+from trainer.base_trainer import BaseTrainer
+from utils import inf_loop, MetricTracker
+from model.utils import padding
+from model.metric import compute_variances
 
 class Trainer(BaseTrainer):
     """
