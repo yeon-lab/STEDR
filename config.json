@@ -7,7 +7,7 @@
         "test_ratio": 0.2
     },
     "hyper_params": {
-        "n_clusters": 3,
+        "n_groups": 3,
         "att_dim": 10,
         "emb_dim": 100,
         "dist_dim": 50,
