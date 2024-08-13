@@ -19,7 +19,7 @@ def main(config):
     logger.info("-"*100)
 
     # get function handles of metrics
-    if config['data_loader']['is_EHR']:
+    if config['data_loader']['data'] == 'EHR':
         metrics = [getattr(module_metric, met) for met in ['AUROC_outcome', 'AUROC_treatment']]
     else:
         metrics = [getattr(module_metric, met) for met in config['metrics']]
