@@ -1,15 +1,16 @@
-# STEDR: Subgroup-based Treatment Effect Estimation for Drug Repurposing
+# STEDR: A Deep Subgrouping Framework for Precision Drug Repurposing via Emulating Clinical Trials on Real-world Patient Data
 
 ## Introduction
-This repository contains source code for paper "STEDR: Subgroup-based Treatment Effect Estimation for Drug Repurposing".
+This repository contains source code for the KDD 2025 submission paper "A Deep Subgrouping Framework for Precision Drug Repurposing via Emulating Clinical Trials on Real-world Patient Data".
 
-Drug repurposing identifies new therapeutic uses for existing drugs, potentially reducing time and costs compared to developing new drugs. Existing studies for computational drug repurposing primarily focus on estimating the treatment effects of candidate drugs across the entire population and identifying the most beneficial ones for repurposable drugs. However, these approaches often overlook the heterogeneity in treatment responses among diverse populations. Addressing this variability is crucial for achieving precise drug repurposing, which aims to tailor therapies to individual patient needs, thereby enhancing treatment effect.
-In this study, we introduce a novel framework, named STEDR, that integrates subgroup identification with treatment effect estimation, aimed at both advancing estimation and facilitating precise drug repurposing. STEDR effectively identifies drugs that can be repurposed, along with subgroups exhibiting heterogeneous treatment responses, by learning subgroup-specific treatment effects. Comprehensive experiments demonstrate the superior performance and efficiency of the proposed method. Notably, a real-world case study on Alzheimer's Disease (AD) treatment highlights the method's effectiveness in identifying suitable repurposable drug candidates and the specific subgroups that benefit most for precise drug repurposing.
+Drug repurposing identifies new therapeutic uses for existing drugs, reducing the time and costs compared to traditional de novo drug discovery. Most existing drug repurposing studies using real-world patient data often treat the entire population as homogeneous, ignoring the heterogeneity of treatment responses across patient subgroups. This approach may overlook promising drugs that benefit specific subgroups but lack notable treatment effects across the entire population, potentially limiting the number of repurposable candidates identified. To address this, we introduce STEDR, a novel drug repurposing framework that integrates subgroup analysis with treatment effect estimation. Our approach first identifies repurposing candidates by emulating multiple clinical trials on real-world patient data and then characterizes patient subgroups by learning subgroup-specific treatment effects. We deploy STEDR to Alzheimer's Disease (AD), a condition with few approved drugs and known heterogeneity in treatment responses. We emulate trials for over one thousand medications on a large-scale real-world database covering over 8 million patients, identifying 14 drug candidates with beneficial effects to AD in characterized subgroups. Experiments demonstrate STEDR's superior capability in identifying repurposing candidates compared to existing approaches. Additionally, our method can characterize clinically relevant patient subgroups associated with important AD-related risk factors, paving the way for precision drug repurposing.
+
 
 ## Overview
-![figure1](https://github.com/yeon-lab/STEDR/assets/39074545/c9c5fc7b-bf14-4339-b5c0-9360c0081bd2)
+![figure1](https://github.com/user-attachments/assets/649b103d-8159-49f6-b23c-ba5701ab4b8f)
 
-Figure 1: An illustration of the proposed method. The input is first processed through the patient-level representation with covariate and visit attention mechanisms and a transformer encoder. Subgroup-specific representation learning assigns the subgroup and extracts subgroup-specific representation from its distribution based on similarities with the global distribution. To learn the subgroup-specific distributions, the model obtains a Gaussian mixture model using the subgroup-specific distributions and their similarities and then computes KLD between the mixture model and the global distribution. The model predicts the outcomes and propensity score from the subgroup-specific representation.
+
+Figure 1: An illustration of STEDR. The EHR data is processed through patient-level attention to learn individualized representations. The subgroup representation network assigns each subject to a subgroup and extracts subgroup-specific representations. The TEE model predicts the potential outcomes and propensity score from these subgroup-specific representations. The model is trained using the IPTW-based loss for confounder adjustment.
 
 
 ## Installation
@@ -27,7 +28,7 @@ pip install -r requirements.txt
 
 ## Data preparation
 ### Synthetic datasets
-The downloadable version of the synthetic dataset used in the paper can be accesse in the 'data' folder. 
+The downloadable version of the synthetic dataset used in the paper can be accessed in the 'data' folder. 
 
 The structure of the synthetic data:
 ```
@@ -56,14 +57,14 @@ python train.py --config 'config.json' --data 'Synthetic'
 Hyper-parameters are set in train.py
 >
 * `data`: dataset to use; {'Synthetic', 'IHDP'}.
-* `config`: json file
+* `config`: .json file
 
 Hyper-parameters are set in *.json
 >
 * `n_samples`: the number of simulated samples (for the synthetic dataset only)
-* `train_ratio`: the ratio of training set
+* `train_ratio`: the ratio of training
 * `test_ratio`: the ratio of test set
-* `n_clusters`: the number of subgroups to identify.
+* `n_groups`: the number of subgroups to identify.
 * `att_dim`: the hidden dimension of the covariate-level and visit-level attentions.
 * `emb_dim`: the hidden dimension of the transformer encoder.
 * `dist_dim`: the hidden dimension of the local and global distributions and prediction networks.
@@ -71,7 +72,7 @@ Hyper-parameters are set in *.json
 * `alpha`: weights to control the CI loss.
 * `metrics`: metrics to print out. It is a list format. Functions for all metrics should be included in 'model/metric.py'.
 * `early_stop`: the number of epochs for early stopping
-* `monitor`: the criterion for early stopping. The first word is 'min' or 'max', the second one is metric
+* `monitor`: the criterion for early stopping. The first word is 'min' or 'max', and the second one is metric
 
 
 _* Experiments were conducted using a computing cluster consisting of 42 nodes, each equipped with dual Intel Xeon 8268 processors, 384GB RAM, and dual NVIDIA Volta V100 GPUs with 32GB memory._
