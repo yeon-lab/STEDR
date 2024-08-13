@@ -10,9 +10,9 @@
     "hyper_params": {
         "n_groups": 3,
         "att_dim": 10,
-        "emb_dim": 100,
+        "emb_dim": 50,
         "dist_dim": 50,
-        "n_layers": 1,
+        "n_layers": 2,
         "alpha": 0.15
     },
     "optimizer": {
