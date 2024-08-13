@@ -1,0 +1,33 @@
+{
+    "n_gpu": 1,
+    "data_loader": {
+        "batch_size": 128,
+        "n_samples": 1000,
+        "train_ratio": 0.6,
+        "test_ratio": 0.2
+    },
+    "hyper_params": {
+        "n_clusters": 3,
+        "att_dim": 10,
+        "emb_dim": 100,
+        "dist_dim": 50,
+        "n_layers": 1,
+        "alpha": 0.15
+    },
+    "optimizer": {
+        "type": "Adam",
+        "args":{
+            "lr": 0.001
+        }
+    },
+    "metrics": [
+        "PEHE",  "ATE", "RMSE"
+    ],
+    "trainer": {
+        "epochs": 2000,
+        "save_dir": "saved/",
+        "verbosity": 2,
+        "monitor": "min val_loss",
+        "early_stop": 20
+    }
+}
