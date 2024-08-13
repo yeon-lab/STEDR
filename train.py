@@ -20,7 +20,7 @@ def main(config):
 
     # get function handles of metrics
     if config['data_loader']['is_EHR']:
-        metrics = [getattr(module_metric, met) for met in ['IPTW', 'Acc_treatment', 'Acc_outcome','AUROC']]
+        metrics = [getattr(module_metric, met) for met in ['AUROC_outcome', 'AUROC_treatment']]
     else:
         metrics = [getattr(module_metric, met) for met in config['metrics']]
     # build optimizer
