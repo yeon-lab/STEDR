@@ -4,7 +4,8 @@
         "batch_size": 128,
         "n_samples": 1000,
         "train_ratio": 0.6,
-        "test_ratio": 0.2
+        "test_ratio": 0.2,
+        "maxlen": 200
     },
     "hyper_params": {
         "n_groups": 3,
