@@ -44,6 +44,22 @@ _Note: The simulation for the synthetic dataset is already integrated within 'tr
 ### EHR dataset
 Please be informed that the real-world dataset utilized in this study is derived from MarketScan claims data. To obtain access to the data, interested parties are advised to contact IBM through [link](https://www.merative.com/real-world-evidence).
 
+
+#### Input data demo
+For your convenience, a demo version of the input data can be found in the data folder. It includes the data structures and a synthetic demonstration of the inputs. Prior to executing the preprocessing codes, please ensure that the format of your input data matches the format provided in the input demo. 
+
+The detailed descriptions of each variable in the dataset can be found in the README.md in the data folder. Please refer to the README.md for comprehensive explanations of the dataset variables. 
+
+#### Preprocess
+The demo dataset serves solely as a reference for the input data format. 
+It is not possible to run the training code using preprocessed data from the demo dataset. 
+Please utilize the preprocessed data provided in the "pickles" folder to run the training code.
+
+```python 
+python preprocess/run_preprocessing.py 
+```
+
+
 ## Training and test
 ### Python command
 For training and evaluating the model, run the following code
