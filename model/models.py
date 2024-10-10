@@ -179,7 +179,7 @@ class STEDR(nn.Module):
 
         mse_loss = self.reconstruction_loss(global_z, x)
         p = self.target_distribution(weights) # set target distribution
-        target_dist_loss = (weights*torch.log(p)).sum()
+        target_dist_loss = (p*torch.log(weights)).sum()
         mixtured_z = self.reparameterize_gmm(cluster_mu[np.arange(n_samples),:,index], 
                                              cluster_var[np.arange(n_samples),:,index], 
                                              weights) # get GMM using similarities and local dist variables
