@@ -116,5 +116,6 @@ Figure 4: Density distribution of gradient norms during training; (a) STEDR with
 Figure 5. Distribution of gradient norms across layers during training.
 
 <img src="https://github.com/user-attachments/assets/59679385-ed5a-47a8-8f6c-6860e5ee6936" width="250px">
+
 Figure 6. Training loss trend over epochs.
 
