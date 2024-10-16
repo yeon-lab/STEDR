@@ -100,10 +100,17 @@ _* Experiments were conducted using a computing cluster consisting of 42 nodes, 
 ![image](https://github.com/user-attachments/assets/7188bffb-1e39-403b-83d5-260adbde60c7)
 Figure 2: Visualization of 95\% confidence intervals of estimated treatment effects across different patient subgroups from 100 trials. C1 to C3 represents Subgroups 1 to 3. We show the results of four drugs, which represent four categories of identified repurposing candidates: (a) significant in all three subgroups, (b) significant in two of three subgroups, (c) significant in one of three subgroups, and (d) not significant in any subgroups. Results of the full list of 14 drugs are presented in the Supplemental material.
 
+
 <img src="https://github.com/user-attachments/assets/d8da5387-f770-4bd4-ad93-ada71c67e8e4" width="450px">
 
 Figure 3: Projection scatter plot of the local features for patient subgroups extracted by STEDR for Trazodone, categorized by their treatment assignments and outcomes. $T=1$ indicates a treated patient, and $Y=1$ represents an adverse outcome. (a) represents all samples colored by assigned subgroups; (b) shows 30 examples for each category.
 
+<img src="https://github.com/user-attachments/assets/29efe615-0e94-4a9d-b71f-09daa44c944b" width="450px">
+Figure 4: Density distribution of gradient norms during training; (a) STEDR without the target distribution loss, (b) STEDR.
 
+<img src="https://github.com/user-attachments/assets/36019de4-6199-4ac1-b4be-684ab6e179f8" width="450px">
+Figure 5. Distribution of gradient norms across layers during training.
 
+<img src="https://github.com/user-attachments/assets/59679385-ed5a-47a8-8f6c-6860e5ee6936" width="250px">
+Figure 6. Training loss trend over epochs.
 
