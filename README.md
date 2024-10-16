@@ -105,10 +105,14 @@ Figure 2: Visualization of 95\% confidence intervals of estimated treatment effe
 
 Figure 3: Projection scatter plot of the local features for patient subgroups extracted by STEDR for Trazodone, categorized by their treatment assignments and outcomes. $T=1$ indicates a treated patient, and $Y=1$ represents an adverse outcome. (a) represents all samples colored by assigned subgroups; (b) shows 30 examples for each category.
 
-<img src="https://github.com/user-attachments/assets/29efe615-0e94-4a9d-b71f-09daa44c944b" width="450px">
+
+<img src="https://github.com/user-attachments/assets/29efe615-0e94-4a9d-b71f-09daa44c944b" width="550px">
+
 Figure 4: Density distribution of gradient norms during training; (a) STEDR without the target distribution loss, (b) STEDR.
 
+
 <img src="https://github.com/user-attachments/assets/36019de4-6199-4ac1-b4be-684ab6e179f8" width="450px">
+
 Figure 5. Distribution of gradient norms across layers during training.
 
 <img src="https://github.com/user-attachments/assets/59679385-ed5a-47a8-8f6c-6860e5ee6936" width="250px">
