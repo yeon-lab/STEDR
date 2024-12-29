@@ -7,7 +7,8 @@ Drug repurposing identifies new therapeutic uses for existing drugs, reducing th
 
 
 ## Overview
-![figure1](https://github.com/user-attachments/assets/649b103d-8159-49f6-b23c-ba5701ab4b8f)
+![figure1](https://github.com/user-attachments/assets/24d356f5-ef7b-42c7-8115-7011141e5ed4)
+
 
 
 Figure 1: An illustration of STEDR. The EHR data is processed through patient-level attention to learn individualized representations. The subgroup representation network assigns each subject to a subgroup and extracts subgroup-specific representations. The TEE model predicts the potential outcomes and propensity score from these subgroup-specific representations. The model is trained using the IPTW-based loss for confounder adjustment.
@@ -101,28 +102,20 @@ _* Experiments were conducted using a computing cluster consisting of 42 nodes, 
 Figure 2: Visualization of 95\% confidence intervals of estimated treatment effects across different patient subgroups from 100 trials. C1 to C3 represents Subgroups 1 to 3. We show the results of four drugs, which represent four categories of identified repurposing candidates: (a) significant in all three subgroups, (b) significant in two of three subgroups, (c) significant in one of three subgroups, and (d) not significant in any subgroups. Results of the full list of 14 drugs are presented in the Supplemental material.
 
 <div align="center">
-<img src="https://github.com/user-attachments/assets/d8da5387-f770-4bd4-ad93-ada71c67e8e4" width="550px">
+<img src="https://github.com/user-attachments/assets/adb135ee-af98-4870-a0df-aefba219b87c" width="550px">
 </div>
 
 Figure 3: Projection scatter plot of the local features for patient subgroups extracted by STEDR for Trazodone, categorized by their treatment assignments and outcomes. $T=1$ indicates a treated patient, and $Y=1$ represents an adverse outcome. (a) represents all samples colored by assigned subgroups; (b) shows 30 examples for each category.
 
 <div align="center">
-<img src="https://github.com/user-attachments/assets/29efe615-0e94-4a9d-b71f-09daa44c944b" width="550px">
+<img src="https://github.com/user-attachments/assets/735d373c-ab59-4be8-b275-1e7fc6bbe2f2" width="550px">
 </div>
 
 Figure 4: Density distribution of gradient norms during training; (a) STEDR without the target distribution loss, (b) STEDR.
 
 <div align="center">
-<img src="https://github.com/user-attachments/assets/36019de4-6199-4ac1-b4be-684ab6e179f8" width="450px">
+<img src="https://github.com/user-attachments/assets/eba00ef3-652e-4ea4-9fbc-5873a95db90c" width="450px">
 </div>
-
 Figure 5. Distribution of gradient norms across layers during training.
 
-
-
-<div align="center">
-<img src="https://github.com/user-attachments/assets/50572154-b9eb-434e-9bcc-09fb742787b1" width="250px">
-</div>
-
-Figure 6. Training loss trend over epochs.
 
