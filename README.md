@@ -7,8 +7,10 @@ Drug repurposing identifies new therapeutic uses for existing drugs, reducing th
 
 
 ## Overview
-![figure1](https://github.com/user-attachments/assets/4be62329-48ac-4190-b351-2b9b3438247c)
+![image](https://github.com/user-attachments/assets/60a79bb4-32cb-40eb-a4ee-62b406e5acd0)
 Figure 1: An illustration of STEDR. The EHR data is processed through patient-level attention to learn individualized representations. The subgroup representation network assigns each subject to a subgroup and extracts subgroup-specific representations. The TEE model predicts the potential outcomes and propensity score from these subgroup-specific representations. The model is trained using the IPTW-based loss for confounder adjustment.
+
+
 
 
 ## Installation
