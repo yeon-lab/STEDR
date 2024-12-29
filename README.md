@@ -94,7 +94,7 @@ _* Experiments were conducted using a computing cluster consisting of 42 nodes, 
 
 
 ## Results
-![image](https://github.com/user-attachments/assets/7188bffb-1e39-403b-83d5-260adbde60c7)
+![image](https://github.com/user-attachments/assets/a5d54147-5dfd-4a19-a252-11974c86f25b)
 
 Figure 2: Visualization of 95\% confidence intervals of estimated treatment effects across different patient subgroups from 100 trials. C1 to C3 represents Subgroups 1 to 3. We show the results of four drugs, which represent four categories of identified repurposing candidates: (a) significant in all three subgroups, (b) significant in two of three subgroups, (c) significant in one of three subgroups, and (d) not significant in any subgroups. Results of the full list of 14 drugs are presented in the Supplemental material.
 
