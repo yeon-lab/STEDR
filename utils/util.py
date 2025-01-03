@@ -153,22 +153,6 @@ def create_IHDP(noise=0.1):
     Y_0 = np.array(np.random.normal(scale=noise, size=num_samples) + Dataset['mu0']).reshape(-1,1)
     Y_1 = np.array(np.random.normal(scale=noise, size=num_samples) + Dataset['mu1']).reshape(-1,1)
     BetaB = None    
-    # ##################
-    
-    # coeffs_ = [0, 0.1, 0.2, 0.3, 0.4]
-
-    # BetaB = np.random.choice(coeffs_, size=X.shape[1], replace=True, p=[0.6, 0.1, 0.1, 0.1, 0.1])
-    
-    # W = np.full_like(X, 0.5)
-    # omega_sB = np.full(len(X), 4)
-    
-    # MU_0 = np.exp(np.dot(X+W, BetaB))
-    # MU_1 = np.dot(X, BetaB) - omega_sB
-
-    # Y_0 = (np.random.normal(scale=noise, size=len(X)) + MU_0).reshape(-1,1)
-    # Y_1 = (np.random.normal(scale=noise, size=len(X)) + MU_1).reshape(-1,1)
-    # ##################
-
 
     Y = T * Y_1 + (1 - T) * Y_0
     Y_cf = T * Y_0 + (1 - T) * Y_1
