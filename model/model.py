@@ -22,15 +22,10 @@ class STEDR(nn.Module):
         dist_dim = config['dist_dim']
         out_dim = config['out_dim']
         n_layer = config['n_layers']
-        self.maxlen = config['maxlen']
+        self.maxlen = config['maxlen'] # 1 if non sequential data, otherwise max lengths of visits
         self.n_clusters = config['n_clusters']
         
-        nhead = 1
-        for i in range(2, self.input_dim):
-            if self.input_dim % i == 0:
-                nhead = i
-                break
-
+        nhead = 5
         self.alpha = alpha
         self.tau = 1.0
         self.MSE = nn.MSELoss()
@@ -137,14 +132,14 @@ class STEDR(nn.Module):
         attn = torch.matmul(embedded, self.attn_var_weight).squeeze(-1)
         return torch.softmax(attn, dim=1).unsqueeze(1) 
     
-    def visit_level_attn(self, x): # get attentions for variable-level
+    def visit_level_attn(self, x): # get attentions for visit-level
         n_samples = len(x)
         embedded = [self.attn_visit_emb[i](x[:, i, :].view(n_samples, -1)) for i in range(self.maxlen)]
         embedded = torch.stack(embedded, dim=1)
         attn = torch.matmul(embedded, self.attn_visit_weight).squeeze(-1)
         return torch.softmax(attn, dim=1).unsqueeze(2) 
     
-    def encode_input(self, x): # get attentions for visit-level
+    def encode_input(self, x): 
         attn_var = self.var_level_attn(x) 
         if self.maxlen > 1:
             attn_visit = self.visit_level_attn(x)      
@@ -160,25 +155,24 @@ class STEDR(nn.Module):
         n_samples = len(x)
         if len(x.shape) != 3:
             x = x.unsqueeze(1)
+        index = -1
         if x_lengths is not None:
             index = x_lengths-1
-        else:
-            index = -1
             
         x_encoded, attentions = self.encode_input(x) # attened input
         global_z = self.global_features(x_encoded) # get global dist that can represent all dat
         cluster_z, cluster_mu, cluster_var = self.local_features(x_encoded) # get local dist for each cluster
             
-        global_z_ = global_z[np.arange(n_samples),index]
+        global_z_ = global_z[np.arange(n_samples),index] # get last visit features
         cluster_z_ = cluster_z[np.arange(n_samples),:,index]
         
         weights = self.similarity(global_z_, cluster_z_)  # compute all cluster simiarities to global dist
         clusters = torch.argmax(weights, dim=1) # find cluster for each data with highest simiarity to global dist
         features = cluster_z_[torch.arange(n_samples), clusters] # get local feature according to assigned cluster to each data
 
-        mse_loss = self.reconstruction_loss(global_z, x)
+        mse_loss = self.reconstruction_loss(global_z, x) # reconstruction loss
         target = self.target_distribution(weights) # set target distribution
-        target_dist_loss = self.KLD(weights.log(), target)
+        target_dist_loss = self.KLD(weights.log(), target)  # target dist loss
         mixtured_z = self.reparameterize_gmm(cluster_mu[np.arange(n_samples),:,index], 
                                              cluster_var[np.arange(n_samples),:,index], 
                                              weights) # get GMM using similarities and local dist variables
@@ -189,19 +183,19 @@ class STEDR(nn.Module):
         return loss, features, clusters, attentions
       
     
-    def predict(self, x, t, y, lengths=None, x_dates=None):
+    def predict(self, x, t, y, lengths=None, x_dates=None): # x: (batch, lengths, features) or (batch, features)
         loss, features, clusters, attentions = self.get_features(x, lengths) # get features and clusters       
         y0_pred = self.control_out(features) # predict control outcome
         y1_pred = self.treat_out(features) # predict treated outcome
         t_pred = self.propensity(features) # predict propensity score
-        c_pred = self.cluster_out(features) 
-        
-        te_pred = y1_pred-y0_pred
-        
+        c_pred = self.cluster_out(features) # predict subgroups
+
+        # prediction losses
         pred_loss = self.criterion(y, t, y0_pred, y1_pred, t_pred) 
         c_loss = self.CE(c_pred, clusters)
         c_pred = torch.argmax(c_pred, dim=1)
-        
+
+        te_pred = y1_pred-y0_pred
         CIs = []
         within_var, across_var = torch.tensor([]), torch.tensor([])
         for c in range(self.n_clusters):
@@ -210,11 +204,9 @@ class STEDR(nn.Module):
                 continue    
             lower_bound, upper_bound = torch.quantile(te_sub, torch.tensor([0.025, 0.975]))
             CIs.append([lower_bound, upper_bound])
-
-            
         overlap = ci_overlap_penalty(CIs)                      
         
-        all_loss = pred_loss + loss + c_loss + overlap
+        all_loss = pred_loss + loss + c_loss + self.alpha*overlap
         return all_loss, y0_pred, y1_pred, t_pred, clusters, attentions, features
     
     def reconstruction_loss(self, global_z, x):
