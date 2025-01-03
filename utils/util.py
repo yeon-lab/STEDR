@@ -21,7 +21,7 @@ def padding(seqs, input_dim, maxlen):
             xvec[subseq] = 1.
     return x, lengths
 
-def load_synthetic(params):
+def Load_split_dataset(params):
     np.random.seed(SEED) 
     random.seed(SEED) 
     x_lengths = None
