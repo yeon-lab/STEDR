@@ -21,16 +21,16 @@ def padding(seqs, input_dim, maxlen):
             xvec[subseq] = 1.
     return x, lengths
 
-def load_synthetic(params, is_importance=False):
+def load_synthetic(params):
     np.random.seed(SEED) 
     random.seed(SEED) 
     x_lengths = None
     if params["dataset"] == 'IHDP':
-        data, BetaB = create_IHDP()
+        data = create_IHDP()
         n_samples = len(data[0])
     elif params["dataset"] == 'synthetic':
         n_samples = params["n_samples"]
-        data, BetaB = create_synth(n_samples)
+        data = create_synth(n_samples)
     else:
         if os.path.isfile('timeseries.pkl'):
             print('load existing timeseries data..')
@@ -61,9 +61,6 @@ def load_synthetic(params, is_importance=False):
     train_set = split_dataset(data, train_index, x_lengths)
     valid_set = split_dataset(data, valid_index, x_lengths)
     test_set = split_dataset(data, test_index, x_lengths)
-    
-    if is_importance:
-        return train_set, valid_set, test_set, BetaB
     
     return train_set, valid_set, test_set
 
@@ -128,7 +125,7 @@ def create_synth(n_samples):
     
     TE = Y_1 - Y_0
 
-    return (X, T, Y, TE), BetaB
+    return (X, T, Y, TE)
 
 
 def create_IHDP(noise=0.1):
@@ -159,7 +156,7 @@ def create_IHDP(noise=0.1):
 
     TE = Y_1 - Y_0
     
-    return (X, T, Y, TE), BetaB
+    return (X, T, Y, TE)
 
 
 def normalize_mean(df):
